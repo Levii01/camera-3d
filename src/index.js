@@ -2,13 +2,11 @@
 
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
-
 const getHeight = () => window.innerHeight;
 const getWidth = () => window.innerWidth;
-const getWindowSize = () => [
-    getWidth(),
-    getHeight()
-];
+const getWindowSize = () => [getWidth(), getHeight()];
+const sin = (x) => Math.sin(x);
+const cos = (x) => Math.cos(x);
 
 const setCanvasDimensions = () => {
     canvas.width = getWidth();
@@ -50,24 +48,26 @@ const multiply = (A, B) => {
                 C[i] += A[i][k]*B[k];
     }
 
-
     return C;
 };
 
 // normalize
 const cube = [
-    [[-3, -1, -10, 1], [-1, -1, -10, 1]],
-    [[-3, -1, -10, 1], [-3, 1, -10, 1]],
-    [[-3, -1, -10, 1], [-3, -1, -12, 1]],
-    [[-1, -1, -10, 1], [-1, -1, -12, 1]],
-    [[-1, -1, -10, 1], [-1, 1, -10, 1]], //
-    [[-1, -1, -12, 1], [-3, -1, -12, 1]],
-    [[-1, -1, -12, 1], [-1, 1, -12, 1]],
-    [[-3, 1, -10, 1], [-1, 1, -10, 1]], //
-    [[-3, -1, -12, 1], [-3, 1, -12, 1]],
-    [[-3, 1, -10, 1], [-3, 1, -12, 1]],
-    [[-3, 1, -12, 1], [-1, 1, -12, 1]],
-    [[-1, 1, -12, 1], [-1, 1, -10, 1]], //
+    // // [[-3, -1, -10, 1], [-1, -1, -10, 1]],
+    // [[-3, -1, -10, 1], [-3, 1, -10, 1]],
+    // [[-3, -1, -10, 1], [-3, -1, -12, 1]],
+    // [[-1, -1, -10, 1], [-1, -1, -12, 1]],
+    // [[-1, -1, -10, 1], [-1, 1, -10, 1]], //
+    // [[-1, -1, -12, 1], [-3, -1, -12, 1]],
+    // [[-1, -1, -12, 1], [-1, 1, -12, 1]],
+    // [[-3, 1, -10, 1], [-1, 1, -10, 1]], //
+    // [[-3, -1, -12, 1], [-3, 1, -12, 1]],
+    // [[-3, 1, -10, 1], [-3, 1, -12, 1]],
+    // [[-3, 1, -12, 1], [-1, 1, -12, 1]],
+    // [[-1, 1, -12, 1], [-1, 1, -10, 1]], //
+
+
+
     [[1, -1, -10, 1], [3, -1, -10, 1]],
     [[1, -1, -10, 1], [1, 1, -10, 1]],
     [[1, -1, -10, 1], [1, -1, -12, 1]],
@@ -80,6 +80,8 @@ const cube = [
     [[1, 1, -10, 1], [1, 1, -12, 1]],
     [[1, 1, -12, 1], [3, 1, -12, 1]],
     [[3, 1, -12, 1], [3, 1, -10, 1]], //
+
+
     [[-3, -1, -13, 1], [-1, -1, -13, 1]],
     [[-3, -1, -13, 1], [-3, 1, -13, 1]],
     [[-3, -1, -13, 1], [-3, -1, -15, 1]],
@@ -92,6 +94,8 @@ const cube = [
     [[-3, 1, -13, 1], [-3, 1, -15, 1]],
     [[-3, 1, -15, 1], [-1, 1, -15, 1]],
     [[-1, 1, -15, 1], [-1, 1, -13, 1]], //
+
+
     [[1, -1, -13, 1], [3, -1, -13, 1]],
     [[1, -1, -13, 1], [1, 1, -13, 1]],
     [[1, -1, -13, 1], [1, -1, -15, 1]],
@@ -167,38 +171,35 @@ const transform = M => {
     requestAnimationFrame(render);
 };
 
-const sin = x => Math.sin(x);
-const cos = x => Math.cos(x);
-
-const mtrans = (x, y, z) => [
+const cameraMove = (x, y, z) => [
     [1, 0, 0, x],
     [0, 1, 0, y],
     [0, 0, 1, z],
     [0, 0, 0, 1]
 ];
 
-const mrotateX = x => [
+const cameraRotateX = x => [
     [1, 0, 0, 0],
     [0, cos(x), sin(x), 0],
     [0, -sin(x), cos(x), 0],
     [0, 0, 0, 1]
 ];
 
-const mrotateY = x => [
-    [cos(x), 0, -sin(x), 0],
+const cameraRotateY = y => [
+    [cos(y), 0, -sin(y), 0],
     [0, 1, 0, 0],
-    [sin(x), 0, cos(x), 0],
+    [sin(y), 0, cos(y), 0],
     [0, 0, 0, 1]
 ];
 
-const mrotateZ = x => [
-    [cos(x), sin(x), 0, 0],
-    [-sin(x), cos(x), 0, 0],
+const cameraRotateZ = z => [
+    [cos(z), sin(z), 0, 0],
+    [-sin(z), cos(z), 0, 0],
     [0, 0, 1, 0],
     [0, 0, 0, 1]
 ];
 
-const mzoom = s => [
+const cameraZoom = s => [
     [s, 0, 0, 0],
     [0, s, 0, 0],
     [0, 0, 1, 0],
@@ -206,15 +207,25 @@ const mzoom = s => [
 ];
 
 window.addEventListener("keydown", e => {
-    if (e.key.toUpperCase() === "A") transform(mtrans(1, 0, 0));
-    else if (e.key.toUpperCase() === "D") transform(mtrans(-1, 0, 0));
-    else if (e.key.toUpperCase() === "W") transform(mtrans(0, 1, 0));
-    else if (e.key.toUpperCase() === "S") transform(mtrans(0, -1, 0));
-    else if (e.key.toUpperCase() === "Q") transform(mzoom(2));
-    else if (e.key.toUpperCase() === "E") transform(mzoom(0.5));
-    else if (e.key.toUpperCase() === "X") transform(mrotateX(0.01));
-    else if (e.key.toUpperCase() === "Y") transform(mrotateY(0.01));
-    else if (e.key.toUpperCase() === "Z") transform(mrotateZ(0.01));;
+    console.log("Button:", e.key.toUpperCase(), ", position:", getWindowSize(), ", ctx:", ctx)
+    switch (e.key.toUpperCase()) {
+        case "W": return transform(cameraMove(0, 0, 1));
+        case "S": return transform(cameraMove(0, 0, -1));
+        case "A": return transform(cameraMove(1, 0, 0));
+        case "D": return transform(cameraMove(-1, 0, 0));
+        case "R": return transform(cameraMove(0, 1, 0));
+        case "F": return transform(cameraMove(0, -1, 0));
+
+        case "+": return transform(cameraZoom(2));
+        case "-": return transform(cameraZoom(0.5));
+
+        case "ARROWUP": return transform(cameraRotateX(-0.1));
+        case "ARROWDOWN": return transform(cameraRotateX(0.1));
+        case "ARROWLEFT": return transform(cameraRotateY(0.1));
+        case "ARROWRIGHT": return transform(cameraRotateY(-0.1));
+        case "[": return transform(cameraRotateZ(0.1));
+        case "]": return transform(cameraRotateZ(-0.1));
+    }
 });
 
 render();
