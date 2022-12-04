@@ -1,6 +1,9 @@
 body {
-  margin: 0;
-  overflow: hidden;
+    margin: 0;
+    overflow: hidden;
 }
 
-canvas { background-color: #292f71 }
+canvas {
+    background-color: #0d63a0;
+    background-image: linear-gradient(#0091f8, #059e05);
+}

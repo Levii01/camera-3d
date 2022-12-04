@@ -1,0 +1,45 @@
+{
+  "name": "camera-3d",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://mateuszciupa.github.io/kamra",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production",
+    "predeploy": "npm run build",
+    "start": "webpack-dev-server --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Levii01/camera-3d.git"
+  },
+  "keywords": [
+    "camera",
+    "3D"
+  ],
+  "author": "Miłosz Sędziak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Levii01/camera-3d/issues"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.5.2",
+    "gh-pages": "^2.2.0",
+    "html-webpack-plugin": "^4.2.0",
+    "style-loader": "^1.1.4",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "browserslist": [
+    "defaults"
+  ],
+  "dependencies": {
+    "fix": "^0.0.6"
+  }
+}
